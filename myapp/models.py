@@ -22,5 +22,5 @@ class Task(models.Model):
     assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
-    priority = models.CharField(max_length=20, choices=priority_choices)
+    priority = models.CharField(max_length=20)
     attach_file = models.FileField(upload_to='attachment', null=True, blank=True)

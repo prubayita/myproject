@@ -116,3 +116,17 @@ def recordProject(request):
         project.save()
 
     return render(request, 'projects.html')
+
+# from .forms import TaskForm
+# def UploadFile(request):
+#     if request.method == 'POST':
+#         form = TaskForm(request.POST,request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return HttpResponse('The file is saved')
+#     else:
+#         form = TaskForm()
+#         context = {
+#             'form':form,
+#         }
+#     return render(request, 'test1.html', context)
