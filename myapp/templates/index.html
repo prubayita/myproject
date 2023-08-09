@@ -1,0 +1,63 @@
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+
+    tr:nth-child(even) {
+    background-color: #dddddd;
+    }
+   
+    </style>
+</head>
+<body>
+    <div class="absolute top-0 right-0 h-16 w-16">{% if user.is_authenticated %}
+        <h6>{{ user.username }}</h6>
+        {% endif %}
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <a href="{% url 'logout' %}"> <i class="lni lni-exit"></i> Sign Out </a>
+          </button>
+    </div>
+    <h2>List of Tasks</h2>
+    <a href="{% url 'newTask' %}">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Create New Task</button>
+    </a>
+    <a href="{% url 'recordProject' %}">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Create Project</button>
+    </a>
+    <table>
+    <tr>
+        <th>Task Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Assignee</th>
+        <th>Priority</th>
+    </tr>
+    {% for task in tasks%}
+    <tr>
+        <td>{{ task.name }}</td>
+        <td>{{ task.startDate }}</td>
+        <td>{{ task.endDate }}</td>
+        <td>{{ task.user.username }}</td>
+        <td>{{ task.priority }}</td>
+    </tr>
+    {% endfor %}
+    
+    </table>
+    
+<!-- Modal toggle -->
+
+
+
+</body>
+</html>
