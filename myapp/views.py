@@ -115,3 +115,11 @@ def recordProject(request):
 
 
 
+from .resources import *
+
+def export(request):
+    task_resource = TaskResource()
+    dataset = task_resource.export()
+    response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="tasks.xls"'
+    return response

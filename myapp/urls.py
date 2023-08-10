@@ -11,7 +11,7 @@ urlpatterns= [
     path('projects', views.recordProject, name='recordProject'),
     path('logout/', views.logout_view, name='logout'),
     path('delete/<str:task_id>/', views.deleteTask, name='delete_task'),
-
+    path('download', views.export, name='export'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
