@@ -9,6 +9,11 @@ from .decorators import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+import json
+from decimal import Decimal
+from datetime import date
+from .filters import TaskFilter
+
 # Create your views here.
 def login(request):
     if request.method == 'POST':
@@ -45,12 +50,23 @@ def signup(request):
     return render(request, 'cred/signup.html')
 @login_required
 def dashboard(request):
-    users = User.objects.all().values()
     tasks = Task.objects.select_related('assignee').all()
     paginator = Paginator(tasks, 5)  # Number of items per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'index.html', {'tasks': page_obj})
+    tks=Task.objects.all()
+    tableFilter = TaskFilter(request.GET, queryset=tks)
+    tks = tableFilter.qs
+
+    task_data=Task.objects.all().values()
+    task_data = [
+        {key: value.strftime('%Y-%m-%d') if isinstance(value, date)
+         else float(value) if isinstance(value, Decimal)
+         else value for key, value in data.items()}
+        for data in task_data
+    ]
+    task_data = json.dumps(list(task_data))
+    return render(request, 'index.html', {'tasks': page_obj, 'task_data': task_data, 'tableFilter':tableFilter})
 @login_required
 def newTask(request):
     users = User.objects.all()
@@ -89,6 +105,9 @@ def newTask(request):
         messages.success(request, 'Task created successfully.')
     context = {'users': users, 'projects': projects, 'error_message': error_message}
     return render(request, 'test1.html', context)
+
+
+@login_required
 def deleteTask(request, task_id):
     try:
         task = get_object_or_404(Task, pk=task_id)
@@ -98,6 +117,8 @@ def deleteTask(request, task_id):
         messages.error(request, 'Task does not exist.')
     
     return redirect('dashboard')
+
+
 @login_required
 def recordProject(request):    
     if request.method == 'POST':
@@ -111,12 +132,14 @@ def recordProject(request):
         )
         # Save the Visitor instance
         project.save()
+        return redirect('newTask')
     return render(request, 'projects.html')
 
 
 
 from .resources import *
 
+@login_required
 def export(request):
     task_resource = TaskResource()
     dataset = task_resource.export()
